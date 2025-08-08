@@ -1,29 +1,34 @@
 import express from 'express';
-import cors from 'cors';
-import { config } from './module/config.js';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import config from './config/config';
+
 
 const app = express();
 
+app.use(express.json());
 
 
-app.use(cors());
-app.use(express.json());    
-
-const dbUrl = config.dbUrl;
-
-if (!dbUrl) {
-  throw new Error('Missing DB_URL environment variable');
+if (!config.dbUrl) {
+    throw new Error('DB_URL is not defined in the environment variables');
 }
 
-mongoose
-  .connect(dbUrl)
-  .then(() => {
-    console.log('Database connected successfully');
-  })
-  .catch((err) => {
-    console.error('Database connection error:', err);
-  });
+
+mongoose.connect(config.dbUrl)
+    .then(() => {
+        console.log('Connected to MongoDB');
+})
+.catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+});
+
+
+// book api
+
+import bookRouter from './module/book/bookApi';
+
+app.use("/api/v1/book", bookRouter );
+
 
 
 
