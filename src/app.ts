@@ -24,11 +24,12 @@ mongoose.connect(config.dbUrl)
 
 
 // book api
-
 import bookRouter from './module/book/bookApi';
-
 app.use("/api/v1/book", bookRouter );
+// auth api
+import authRouter from "./module/auth/userApi";
 
+app.use("/api/v1/auth",authRouter)
 
 
 

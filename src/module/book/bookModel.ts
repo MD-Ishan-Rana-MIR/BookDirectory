@@ -34,7 +34,7 @@ const bookSchema = new mongoose.Schema<BookType>({
         type: Boolean,
         default: true
     }
-});
+},{timestamps: true,versionKey: false});
 
 
 const bookModel = mongoose.model<BookType>('Book', bookSchema);
