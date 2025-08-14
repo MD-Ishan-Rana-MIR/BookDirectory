@@ -35,6 +35,28 @@ export const getAllBooks = async (req: Request, res: Response) => {
     }
 };
 
+export const bookByUser = async (req: Request, res: Response) => {
+    try {
+        const userId = req.headers.id;
+        const books = await bookModel.find({ userId: userId });
+
+        if (books.length === 0) {
+            return res.status(404).json({ message: "No books found for this user" });
+        }
+
+        return res.status(200).json({
+            message: "Books retrieved successfully",
+            data: books
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error instanceof Error ? error.message : "Unknown error"
+        });
+    }
+};
+
 export const getBookById = async (req: Request, res: Response) => {
     const bookId = req.params.id;
     try {
@@ -58,16 +80,16 @@ export const bookFilter = async (req: Request, res: Response) => {
     const { title, author, genre, publicationYear } = req.query;
     const filter: any = {};
     try {
-        if(title){
+        if (title) {
             filter.title = { $regex: title, $options: 'i' }; // Case-insensitive search
         }
-        if(author){
+        if (author) {
             filter.author = { $regex: author, $options: 'i' }; // Case-insensitive search
         }
-        if(genre){
+        if (genre) {
             filter.genre = { $regex: genre, $options: 'i' }; // Case-insensitive search
         }
-        if(publicationYear){
+        if (publicationYear) {
             filter.publicationYear = publicationYear;
         }
         const books = await bookModel.find(filter);
@@ -82,7 +104,7 @@ export const bookFilter = async (req: Request, res: Response) => {
     } catch (error) {
         console.error("Error filtering books:", error);
         res.status(500).json({ message: "Internal server error" });
-        
+
     }
 }
 
